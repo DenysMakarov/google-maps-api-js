@@ -15,8 +15,8 @@ const MyMap = () => {
         googleMapsApiKey: API_KEY
     })
 
-    const [pos, setPos] = useState({lat: 44, lng: -80});
-    const [address, setAddress] = useState("1600 Pennsylvania Ave NW, Washington DC")
+    const [pos, setPos] = useState(null);
+    const [address, setAddress] = useState("1600 Pennsylvania Avenue NW, Washington, DC")
 
     useEffect(()=>{
         getPositions()
@@ -25,10 +25,8 @@ const MyMap = () => {
     const getPositions = () => {
         fetch(`http://api.positionstack.com/v1/forward?access_key=${API_KEY_POSITIONSTACK}&query=${address}`)
             .then(data => data.json())
-            .then((pos) => {
-                console.log(pos)
-                // console.log(pos.data)
-                setPos({lat: pos.data[0].latitude, lng: pos.data[0].longitude})
+            .then((addr) => {
+                setPos(addr.data)
             })
     }
 
@@ -39,6 +37,7 @@ const MyMap = () => {
     const handleChange = (e) => {
         e.preventDefault()
         setAddress(e.target.value)
+        console.log(pos)
     }
 
 
@@ -57,7 +56,7 @@ const MyMap = () => {
 };
 
 
-/*38.897675   -77.036547
+/*
 * another component
 * */
 
@@ -71,10 +70,6 @@ const Map = ({pos, setPosition}) => {
 
     const onUnmount = useCallback(function callback(map){
         mapRef.current = undefined
-    }, [])
-
-    useEffect(() => {
-        console.log(pos)
     }, [])
 
     const defaultOptions = {
@@ -94,17 +89,27 @@ const Map = ({pos, setPosition}) => {
     }
     return (
         <div className="wrapper">
-            <GoogleMap
-                zoom={10}
-                center={pos}
-                mapContainerClassName="map-container"
-                options={defaultOptions}
-                onLoad={onLoad}
-                onUnmount={onUnmount}
-            >
-                <Marker position={pos}/>
-                <Marker position={{lat: 38.997675, lng: -77.136547}}/>
-            </GoogleMap>
+
+            {
+                pos &&
+                <GoogleMap
+                    zoom={10}
+                    center={{ lat: pos[0].latitude, lng: pos[0].longitude}}
+                    mapContainerClassName="map-container"
+                    options={defaultOptions}
+                    onLoad={onLoad}
+                    onUnmount={onUnmount}
+                >
+                    {
+                        pos.map((map, idx) => (
+                            <Marker key={idx} position={{lat: map.latitude, lng: map.longitude}}/>
+                        ))
+                    }
+
+                    <Marker position={{lat: 38.997675, lng: -77.136547}}/>
+                </GoogleMap>
+            }
+
         </div>
 
     )

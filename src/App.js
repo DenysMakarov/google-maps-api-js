@@ -1,10 +1,10 @@
 import './App.css';
-import MyMap from "./components/MyMap";
+import MapContainer from "./components/MapContainer";
 
 function App() {
     return (
         <div className="App">
-            <MyMap/>
+            <MapContainer/>
         </div>
     );
 }

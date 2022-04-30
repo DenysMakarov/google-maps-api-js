@@ -36,3 +36,18 @@
     transform: rotate(360deg);
   }
 }
+
+.gm-control-active:before{
+  content: "Hello";
+}
+
+.gm-control-active{
+  border-radius: 5px;
+  display: none!important;
+}
+
+.gmnoprint{
+  display: none;
+}
+
+
